@@ -25,3 +25,21 @@ jobs:
 
       - name: Push Docker image to Docker Hub
         run: docker push ${{secrets.DOCKER_USERNAME}}/$IMAGE:$IMAGE_TAG
+
+deploy:
+    needs: build
+    runs-on: ubuntu-latest
+         
+    steps:
+     
+    - name: Connect to EC2 Instance, update Docker
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_PRIVATE_KEY }}
+        script: |
+             sudo docker rm -f $(sudo docker ps -q)
+             sudo docker rmi -f $(sudo docker images -q)
+             sudo docker pull ${{secrets.DOCKER_USERNAME}}/upod-web-frontend:latest
+             sudo docker run -d -p 3000:3000 ${{secrets.DOCKER_USERNAME}}/upod-web-frontend:latest
