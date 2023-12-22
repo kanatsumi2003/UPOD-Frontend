@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+env: 
+    IMAGE_TAG: "latest"
+    IMAGE: "upod.api"
+
 jobs:
   build:
     runs-on: ubuntu-latest
