@@ -1,0 +1,1 @@
+export type MaintainStatus = 'pending' |  'completed';
